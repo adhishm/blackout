@@ -165,8 +165,6 @@ bool loadGameData (Blackout *bl)
 void game (Blackout *bl)
 {
   std::string m;
-  char c;
-  std::string fileName;
   int x, y, xy;
   bool gameContinue = true;
   
