@@ -8,10 +8,8 @@
  */
 
 /*
-    DD2D-Matryoshka approach.
-    A set of classes defining the behaviour of crystalline defects,
-    with the final goal of carrying out dislocation dynamics simulations
-    in two dimensions.
+    Blackout
+    Classes and functions to play the game of blackout.
     Copyright (C) 2013  Adhish Majumdar
 
     This program is free software: you can redistribute it and/or modify
