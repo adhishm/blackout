@@ -33,18 +33,18 @@
  */
 Blackout::Blackout (int boardSize)
 {
-  // Initialize the board
-  this->b = new Board(boardSize);
-  this->nPoints = boardSize;
+    // Initialize the board
+    this->b = new Board(boardSize);
+    this->nPoints = boardSize;
 
-  // Fill the board with 0's
-  int i, j;
-  for (i=1; i<=boardSize; i++)
+    // Fill the board with 0's
+    int i, j;
+    for (i=1; i<=boardSize; i++)
     {
-      for (j=1; j<=boardSize; j++)
-	{
-	  this->b->setCellValue (i, j, 0);
-	}
+        for (j=1; j<=boardSize; j++)
+        {
+            this->b->setCellValue (i, j, 0);
+        }
     }
 }
 
@@ -55,36 +55,36 @@ Blackout::Blackout (int boardSize)
  */
 bool Blackout::applyMove (int x, int y)
 {
-  if (x<=0 || x>this->nPoints || y <=0 || y>this->nPoints)
-  {
-    return (false);
-  }
-  
-  this->flipCell (x, y);
-
-  // Flip above
-  if (x!=1)
+    if (x<=0 || x>this->nPoints || y <=0 || y>this->nPoints)
     {
-      this->flipCell (x-1, y);
-    }
-  // Flip below
-  if (x!=this->nPoints)
-    {
-      this->flipCell (x+1, y);
-    }
-  // Flip left
-  if (y!=1)
-    {
-      this->flipCell (x, y-1);
-    }
-  // Flip right
-  if (y!=this->nPoints)
-    {
-      this->flipCell (x, y+1);
+        return (false);
     }
 
-  (this->nMoves)++;
-  return (true);
+    this->flipCell (x, y);
+
+    // Flip above
+    if (x!=1)
+    {
+        this->flipCell (x-1, y);
+    }
+    // Flip below
+    if (x!=this->nPoints)
+    {
+        this->flipCell (x+1, y);
+    }
+    // Flip left
+    if (y!=1)
+    {
+        this->flipCell (x, y-1);
+    }
+    // Flip right
+    if (y!=this->nPoints)
+    {
+        this->flipCell (x, y+1);
+    }
+
+    (this->nMoves)++;
+    return (true);
 }
 
 /**
@@ -92,10 +92,10 @@ bool Blackout::applyMove (int x, int y)
  */
 bool Blackout::checkWinCondition ()
 {
-  int boardSum = this->b->sum ();
-  // For the win condition, all cells must be 0 or 1
-  this->win = (boardSum==0) || (boardSum==(this->nPoints * this->nPoints));
-  return ( this->win );
+    int boardSum = this->b->sum ();
+    // For the win condition, all cells must be 0 or 1
+    this->win = (boardSum==0) || (boardSum==(this->nPoints * this->nPoints));
+    return ( this->win );
 }
 
 /**
@@ -104,41 +104,41 @@ bool Blackout::checkWinCondition ()
  */
 bool Blackout::generateGame (int nInitializationLoops, int count)
 {
-  int x, y, i;
+    int x, y, i;
 
-  srand ( time (NULL) );  // Set the seed for the random number generation
+    srand ( time (NULL) );  // Set the seed for the random number generation
 
-  for (i=0; i<nInitializationLoops; i++)
+    for (i=0; i<nInitializationLoops; i++)
     {
-      // Get random position on the board
-      x = getRandomInteger (1, this->nPoints);
-      y = getRandomInteger (1, this->nPoints);
+        // Get random position on the board
+        x = getRandomInteger (1, this->nPoints);
+        y = getRandomInteger (1, this->nPoints);
 
-      if (!this->applyMove (x, y))
-	{
-	  // Trouble applying move. Abort.
-	  return (false);
-	}
+        if (!this->applyMove (x, y))
+        {
+            // Trouble applying move. Abort.
+            return (false);
+        }
     }
 
-  // Check for not getting a winning condition right at the beginning.
-  // Because that would be just plain absurd, won't it?
-  if (this->checkWinCondition())
+    // Check for not getting a winning condition right at the beginning.
+    // Because that would be just plain absurd, won't it?
+    if (this->checkWinCondition())
     {
-      // This is not working. Game generation failed
-      if (count==GAME_RECURSION_LIMIT)
-	{
-	  return (false);
-	}
-      // Let's try generating with a different number of initialization loops
-      this->generateGame(nInitializationLoops * rand(), ++count);
+        // This is not working. Game generation failed
+        if (count==GAME_RECURSION_LIMIT)
+        {
+            return (false);
+        }
+        // Let's try generating with a different number of initialization loops
+        this->generateGame(nInitializationLoops * rand(), ++count);
     }
 
-  // If we reach here, then the game generation was successful
-  this->nMoves = 0;
-  this->win = false;
-  this->b->setInitialState ();
-  return (true);
+    // If we reach here, then the game generation was successful
+    this->nMoves = 0;
+    this->win = false;
+    this->b->setInitialState ();
+    return (true);
 }
 
 /**
@@ -147,45 +147,45 @@ bool Blackout::generateGame (int nInitializationLoops, int count)
  */
 bool Blackout::saveGame (const char* fileName)
 {
-  // Open the file
-  std::ofstream outFile;
-  outFile.open (fileName);
+    // Open the file
+    std::ofstream outFile;
+    outFile.open (fileName);
 
-  if (outFile.is_open())
+    if (outFile.is_open())
     {
-      int i, j, cellValue;
+        int i, j, cellValue;
 
-      outFile << "Board size: " << this->nPoints << std::endl;
-      outFile << "Moves: " << this->nMoves << std::endl;
+        outFile << "Board size: " << this->nPoints << std::endl;
+        outFile << "Moves: " << this->nMoves << std::endl;
 
-      outFile << "Board state:";
-      for (i=0; i<this->nPoints; i++)
-	{
-	  outFile << "\n";
-	  for (j=0; j<this->nPoints; j++)
-	    {
-	      this->b->getCellValue (i+1, j+1, &cellValue);
-	      outFile << cellValue << " ";
-	    }
-	}
+        outFile << "Board state:";
+        for (i=0; i<this->nPoints; i++)
+        {
+            outFile << "\n";
+            for (j=0; j<this->nPoints; j++)
+            {
+                this->b->getCellValue (i+1, j+1, &cellValue);
+                outFile << cellValue << " ";
+            }
+        }
 
-      outFile << "\nInitial state:";
-      for (i=0; i<this->nPoints; i++)
-	{
-	  outFile << "\n";
-	  for (j=0; j<this->nPoints; j++)
-	    {
-	      this->b->getInitialCellValue (i+1, j+1, &cellValue);
-	      outFile << cellValue << " ";
-	    }
-	}
-      outFile << std::endl;
-      outFile.close ();
-      return (true);
+        outFile << "\nInitial state:";
+        for (i=0; i<this->nPoints; i++)
+        {
+            outFile << "\n";
+            for (j=0; j<this->nPoints; j++)
+            {
+                this->b->getInitialCellValue (i+1, j+1, &cellValue);
+                outFile << cellValue << " ";
+            }
+        }
+        outFile << std::endl;
+        outFile.close ();
+        return (true);
     }
-  else
+    else
     {
-      return (false);
+        return (false);
     }
 }
 
@@ -195,145 +195,155 @@ bool Blackout::saveGame (const char* fileName)
  */
 bool Blackout::loadGame (const char* fileName)
 {
-  // Open the file
-  std::ifstream inFile;
-  inFile.open (fileName);
+    // Open the file
+    std::ifstream inFile;
+    inFile.open (fileName);
 
-  if (inFile.is_open())
+    if (inFile.is_open())
     {
-      // Before the file data is read directly into the class object, it must be verified.
-      // The following variables store temporarily until all information in the file is read.
-      int boardSize, numMoves;
-      int **boardData;
-      int i, j;
+        // Before the file data is read directly into the class object, it must be verified.
+        // The following variables store temporarily until all information in the file is read.
+        int boardSize, numMoves;
+        int **boardData;
+        int i, j;
 
-      std::string t1, t2;    // To store the titles
-      std::string line;      // To read entire lines
-      // char newline;
-      inFile >> t1 >> t2 >> boardSize;   // Board size:
-      inFile >> t1 >> numMoves;          // Moves:
+        Board* newBoard;
 
-      // Read current board state
-      std::getline (inFile, line);       // Newline
-      std::getline (inFile, line);       // Board state:
+        std::string t1, t2;    // To store the titles
+        std::string line;      // To read entire lines
+        // char newline;
+        inFile >> t1 >> t2 >> boardSize;   // Board size:
+        inFile >> t1 >> numMoves;          // Moves:
 
-      // Allocate memory to boardData
-      boardData = new int* [boardSize];
-      if (!boardData)
-	{
-	  return (false);
-	}
-      else
-	{
-	  for (i=0; i<boardSize; i++)
-	    {
-	      boardData[i] = new int [boardSize];
-	      if (!boardData[i])
-		{
-		  // Clear previous data
-		  for (j=0; i<i; j++)
-		    {
-		      delete (boardData[j]);
-		      boardData[j] = NULL;
-		    }
-		  delete (boardData);
-		  boardData = NULL;
+        // Read current board state
+        std::getline (inFile, line);       // Newline
+        std::getline (inFile, line);       // Board state:
 
-		  inFile.close ();
-		  return (false);
-		}
-	      else
-		{
-		  // Data allocation done - populate the array
-		  for (j=0; j<boardSize; j++)
-		    {
-		      inFile >> boardData[i][j];
-		    }
-		  // inFile >> newline;
-		}
-	    }
-	  // All data is read - it can be transferred now
-	  for (i=0; i<boardSize; i++)
-	    {
-	      for (j=0; j<boardSize; j++)
-		{
-		  this->b->setCellValue(i+1, j+1, boardData[i][j]);
-		}
-	    }
-	  // Free data from boardData
-	  for (i=0; i<boardSize; i++)
-	    {
-	      delete (boardData[i]);
-	      boardData[i] = NULL;
-	    }
-	  delete (boardData);
-	  boardData = NULL;
-	}
+        newBoard = new Board(boardSize);
 
-      // Read initial board state
-      std::getline (inFile, line);      // Newline
-      std::getline (inFile, line);      // Initial state:
+        // Allocate memory to boardData
+        boardData = new int* [boardSize];
+        if (!boardData)
+        {
+            inFile.close();
+            return (false);
+        }
+        else
+        {
+            for (i=0; i<boardSize; i++)
+            {
+                boardData[i] = new int [boardSize];
+                if (!boardData[i])
+                {
+                    // Clear previous data
+                    for (j=0; i<i; j++)
+                    {
+                        delete (boardData[j]);
+                        boardData[j] = NULL;
+                    }
+                    delete (boardData);
+                    boardData = NULL;
 
-      // Allocate memory to boardData
-      boardData = new int* [boardSize];
-      if (!boardData)
-	{
-	  return (false);
-	}
-      else
-	{
-	  for (i=0; i<boardSize; i++)
-	    {
-	      boardData[i] = new int [boardSize];
-	      if (!boardData[i])
-		{
-		  // Clear previous data
-		  for (j=0; i<i; j++)
-		    {
-		      delete (boardData[j]);
-		      boardData[j] = NULL;
-		    }
-		  delete (boardData);
-		  boardData = NULL;
+                    inFile.close ();
+                    return (false);
+                }
+                else
+                {
+                    // Data allocation done - populate the array
+                    for (j=0; j<boardSize; j++)
+                    {
+                        inFile >> boardData[i][j];
+                    }
+                }
+            }
+            // All data is read - it can be transferred now
+            for (i=0; i<boardSize; i++)
+            {
+                for (j=0; j<boardSize; j++)
+                {
+                    newBoard->setCellValue(i+1, j+1, boardData[i][j]);
+                }
+            }
+            // Free data from boardData
+            for (i=0; i<boardSize; i++)
+            {
+                delete (boardData[i]);
+                boardData[i] = NULL;
+            }
+            delete (boardData);
+            boardData = NULL;
+        }
 
-		  inFile.close ();
-		  return (false);
-		}
-	      else
-		{
-		  // Data allocation done - populate the array
-		  for (j=0; j<boardSize; j++)
-		    {
-		      inFile >> boardData[i][j];
-		    }
-		  // inFile >> newline;
-		}
-	    }
-	  // All data is read - it can be transferred now
-	  for (i=0; i<boardSize; i++)
-	    {
-	      for (j=0; j<boardSize; j++)
-		{
-		  this->b->setInitialCellValue(i+1, j+1, boardData[i][j]);
-		}
-	    }
-	  // Free data from boardData
-	  for (i=0; i<boardSize; i++)
-	    {
-	      delete (boardData[i]);
-	      boardData[i] = NULL;
-	    }
-	  delete (boardData);
-	  boardData = NULL;
-	}
+        // Read initial board state
+        std::getline (inFile, line);      // Newline
+        std::getline (inFile, line);      // Initial state:
 
-      // All data is read - close the file and return
-      inFile.close ();      
-      return (true);
+        // Allocate memory to boardData
+        boardData = new int* [boardSize];
+        if (!boardData)
+        {
+            return (false);
+        }
+        else
+        {
+            for (i=0; i<boardSize; i++)
+            {
+                boardData[i] = new int [boardSize];
+                if (!boardData[i])
+                {
+                    // Clear previous data
+                    for (j=0; i<i; j++)
+                    {
+                        delete (boardData[j]);
+                        boardData[j] = NULL;
+                    }
+                    delete (boardData);
+                    boardData = NULL;
+
+                    inFile.close ();
+                    return (false);
+                }
+                else
+                {
+                    // Data allocation done - populate the array
+                    for (j=0; j<boardSize; j++)
+                    {
+                        inFile >> boardData[i][j];
+                    }
+                    // inFile >> newline;
+                }
+            }
+            // All data is read - it can be transferred now
+            for (i=0; i<boardSize; i++)
+            {
+                for (j=0; j<boardSize; j++)
+                {
+                    newBoard->setInitialCellValue(i+1, j+1, boardData[i][j]);
+                }
+            }
+            // Free data from boardData
+            for (i=0; i<boardSize; i++)
+            {
+                delete (boardData[i]);
+                boardData[i] = NULL;
+            }
+            delete (boardData);
+            boardData = NULL;
+        }
+
+        // All data is read - close the file, transfer data, and return
+
+        this->nMoves = numMoves;
+        delete(this->b);
+        this->b = newBoard;
+        this->nPoints = boardSize;
+
+        inFile.close ();
+        return (true);
     }
-  else
+    else
     {
-      return (false);
+        return (false);
     }
 }
 
@@ -342,8 +352,8 @@ bool Blackout::loadGame (const char* fileName)
  */
 void Blackout::reset ()
 {
-  this->b->resetBoard ();
-  this->nMoves = 0;
+    this->b->resetBoard ();
+    this->nMoves = 0;
 }
 
 /**
@@ -353,16 +363,16 @@ void Blackout::reset ()
  */
 void Blackout::flipCell (int x, int y)
 {
-  int cellValue;
-  this->b->getCellValue (x, y, &cellValue);
+    int cellValue;
+    this->b->getCellValue (x, y, &cellValue);
 
-  if (cellValue==0)
+    if (cellValue==0)
     {
-      this->b->setCellValue (x, y, 1);
+        this->b->setCellValue (x, y, 1);
     }
-  else
+    else
     {
-      this->b->setCellValue (x, y, 0);
+        this->b->setCellValue (x, y, 0);
     }
 }
 
@@ -371,27 +381,27 @@ void Blackout::flipCell (int x, int y)
  */
 bool Blackout::show ()
 {
-  int i, j;
-  int value;
-  
-  for (i=1; i<=this->nPoints; i++)
-  {
-    std::cout << std::endl;
-    for (j=1; j<=this->nPoints; j++)
+    int i, j;
+    int value;
+
+    for (i=1; i<=this->nPoints; i++)
     {
-      if (this->b->getCellValue (i, j, &value))
-      {
-	std::cout << value << " ";
-      }
-      else
-      {
-	std::cout << "\nError reading game state.";
-	return (false);
-      }
+        std::cout << std::endl;
+        for (j=1; j<=this->nPoints; j++)
+        {
+            if (this->b->getCellValue (i, j, &value))
+            {
+                std::cout << value << " ";
+            }
+            else
+            {
+                std::cout << "\nError reading game state.";
+                return (false);
+            }
+        }
     }
-  }
-  
-  return (true);
+
+    return (true);
 }
 
 /**
@@ -399,7 +409,7 @@ bool Blackout::show ()
  */
 int Blackout::getMoves ()
 {
-  return (this->nMoves);
+    return (this->nMoves);
 }
 
 /**
@@ -407,5 +417,5 @@ int Blackout::getMoves ()
  */
 bool Blackout::getWin()
 {
-  return (this->win);
+    return (this->win);
 }
